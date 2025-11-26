@@ -1,0 +1,54 @@
+{
+    "formTitle": "Kunden-Feedback",
+    "fields": [
+        {
+            "id": "name",
+            "label": "Name",
+            "controlType": "textfield",
+            "dataType": "string",
+            "required": true
+        },
+        {
+            "id": "email",
+            "label": "E-Mail-Adresse",
+            "controlType": "textfield",
+            "dataType": "string",
+            "required": false
+        },
+        {
+            "id": "age",
+            "label": "Alter",
+            "controlType": "spinner",
+            "dataType": "int",
+            "required": false
+        },
+        {
+            "id": "rating",
+            "label": "Bewertung",
+            "controlType": "dropdown",
+            "dataType": "string",
+            "required": true,
+            "options": [
+                "Sehr Gut",
+                "Gut",
+                "Befriedigend",
+                "Ausreichend",
+                "Mangelhaft"
+            ]
+        },
+        {
+            "id": "newsletter",
+            "label": "Newsletter abonnieren",
+            "controlType": "checkbox",
+            "dataType": "boolean",
+            "required": false
+        },
+        {
+            "id": "comment",
+            "label": "Feedback",
+            "controlType": "textarea",
+            "dataType": "string",
+            "required": true
+        }
+    ]
+}

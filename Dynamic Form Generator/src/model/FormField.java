@@ -2,7 +2,7 @@ package model;
 
 import java.util.List;
 
-public class FieldDefinition {
+public class FormField {
     private String id;
     private String label;
     private ControlType controlType;
@@ -10,7 +10,7 @@ public class FieldDefinition {
     private boolean required;
     private List<String> options;
 
-    public FieldDefinition(String id, String label, ControlType controlType, DataType datatype, boolean required,
+    public FormField(String id, String label, ControlType controlType, DataType datatype, boolean required,
             List<String> options) {
         this.id = id;
         this.label = label;

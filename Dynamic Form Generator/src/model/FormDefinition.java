@@ -4,11 +4,9 @@ import java.util.List;
 
 public class FormDefinition {
     private String formTitle;
-    private List<FieldDefinition> fields;
+    private List<FormField> fields;
 
-    public FormDefinition(String formTitle, List<FieldDefinition> fields) {
-        this.formTitle = formTitle;
-        this.fields = fields;
+    public FormDefinition() {
     }
 
     public String getFormTitle() {
@@ -19,11 +17,11 @@ public class FormDefinition {
         this.formTitle = formTitle;
     }
 
-    public List<FieldDefinition> getFields() {
+    public List<FormField> getFields() {
         return fields;
     }
 
-    public void setFields(List<FieldDefinition> fields) {
+    public void setFields(List<FormField> fields) {
         this.fields = fields;
     }
 
