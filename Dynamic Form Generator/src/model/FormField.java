@@ -10,14 +10,8 @@ public class FormField {
     private boolean required;
     private List<String> options;
 
-    public FormField(String id, String label, ControlType controlType, DataType datatype, boolean required,
-            List<String> options) {
-        this.id = id;
-        this.label = label;
-        this.controlType = controlType;
-        this.datatype = datatype;
-        this.required = required;
-        this.options = options;
+    public FormField() {
+
     }
 
     public String getId() {
