@@ -16,7 +16,7 @@ public class FormGuiBuilder {
     public JPanel buildFormPanel(FormDefinition formDefinition) {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.insets = new Insets(5, 5, 5, 50);
         gbc.anchor = GridBagConstraints.LINE_START;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         int row = 0;
@@ -56,14 +56,29 @@ public class FormGuiBuilder {
             case CHECKBOX:
                 return new JCheckBox();
             case DATE:
-                SpinnerDateModel model = new SpinnerDateModel();
-                JSpinner spinner = new JSpinner(model);
-                JSpinner.DateEditor editor = new JSpinner.DateEditor(spinner, "dd.mm.yyyy");
-                spinner.setEditor(editor);
-                return spinner;
+                return createDateSpinner();
             case DROPDOWN:
                 return new JComboBox<>(field.getOptions().toArray(new String[field.getOptions().size()]));
+            case SPINNER:
+                return createNumberSpinner();
+            default:
+                throw new IllegalArgumentException("Nicht unterstützer controlType: " + field.getControlType());
         }
-        throw new IllegalArgumentException();
+    }
+
+    public JSpinner createDateSpinner() {
+        SpinnerDateModel model = new SpinnerDateModel();
+        JSpinner spinner = new JSpinner(model);
+        JSpinner.DateEditor editor = new JSpinner.DateEditor(spinner, "dd.MM.yyyy");
+        spinner.setEditor(editor);
+        return spinner;
+    }
+
+    public JSpinner createNumberSpinner() {
+        SpinnerNumberModel model = new SpinnerNumberModel();
+        JSpinner spinner = new JSpinner(model);
+        JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spinner);
+        spinner.setEditor(editor);
+        return spinner;
     }
 }

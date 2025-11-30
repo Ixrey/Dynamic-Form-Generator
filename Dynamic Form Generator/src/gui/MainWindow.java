@@ -2,11 +2,15 @@ package gui;
 
 import java.awt.Container;
 import java.awt.FlowLayout;
+import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.BorderLayout;
 
 public class MainWindow extends JFrame {
@@ -18,21 +22,21 @@ public class MainWindow extends JFrame {
     public MainWindow() {
         super("Dynamischer Formular Generator");
 
-        initWindow();
-        initLayout();
+        initializeWindow();
+        initializeLayout();
     }
 
-    public void initWindow() {
+    public void initializeWindow() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(900, 600);
+        setSize(600, 400);
         setLocationRelativeTo(null);
     }
 
-    public void initLayout() {
+    public void initializeLayout() {
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
 
-        JPanel toolBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel toolBar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
         btnLoadForm = new JButton("Formular Laden");
         btnLoadResult = new JButton("Ergebnis Speichern");
@@ -48,7 +52,7 @@ public class MainWindow extends JFrame {
 
         formContainer.add(lblText, BorderLayout.CENTER);
         contentPane.add(formContainer, BorderLayout.CENTER);
-        contentPane.add(toolBar, BorderLayout.NORTH);
+        contentPane.add(toolBar, BorderLayout.SOUTH);
     }
 
     public void showFormPanel(JPanel panel) {
@@ -56,5 +60,22 @@ public class MainWindow extends JFrame {
         formContainer.add(panel, BorderLayout.CENTER);
         formContainer.revalidate();
         formContainer.repaint();
+    }
+
+    public void addLoadFormListener(ActionListener listener) {
+        btnLoadForm.addActionListener(listener);
+    }
+
+    public void addLoadResultListener(ActionListener listener) {
+        btnLoadResult.addActionListener(listener);
+    }
+
+    public void addSaveResultListener(ActionListener listener) {
+        btnSaveResult.addActionListener(listener);
+    }
+
+    public void showValidationErrors(List<String> errors) {
+        String message = String.join("\n", errors);
+        JOptionPane.showMessageDialog(this, message, "Fehler beim Laden", JOptionPane.ERROR_MESSAGE);
     }
 }

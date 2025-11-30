@@ -6,7 +6,7 @@ public class FormField {
     private String id;
     private String label;
     private ControlType controlType;
-    private DataType datatype;
+    private DataType dataType;
     private boolean required;
     private List<String> options;
 
@@ -38,12 +38,12 @@ public class FormField {
         this.controlType = controlType;
     }
 
-    public DataType getDatatype() {
-        return datatype;
+    public DataType getDataType() {
+        return dataType;
     }
 
-    public void setDatatype(DataType datatype) {
-        this.datatype = datatype;
+    public void setDataType(DataType datatype) {
+        this.dataType = datatype;
     }
 
     public boolean isRequired() {

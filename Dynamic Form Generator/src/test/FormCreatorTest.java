@@ -25,7 +25,7 @@ public class FormCreatorTest {
             name.setId("name");
             name.setLabel("Name");
             name.setControlType(ControlType.TEXTFIELD);
-            name.setDatatype(DataType.STRING);
+            name.setDataType(DataType.STRING);
             name.setRequired(true);
 
             // FormField age = new FormField();
@@ -39,21 +39,21 @@ public class FormCreatorTest {
             birthday.setId("birthday");
             birthday.setLabel("Geburtsdatum");
             birthday.setControlType(ControlType.DATE);
-            birthday.setDatatype(DataType.STRING);
+            birthday.setDataType(DataType.STRING);
             birthday.setRequired(false);
 
             FormField newsletter = new FormField();
             newsletter.setId("newsletter");
             newsletter.setLabel("Newsletter");
             newsletter.setControlType(ControlType.CHECKBOX);
-            newsletter.setDatatype(DataType.BOOLEAN);
+            newsletter.setDataType(DataType.BOOLEAN);
             newsletter.setRequired(false);
 
             FormField rating = new FormField();
             rating.setId("rating");
             rating.setLabel("Bewertung");
             rating.setControlType(ControlType.DROPDOWN);
-            rating.setDatatype(DataType.STRING);
+            rating.setDataType(DataType.STRING);
             rating.setRequired(true);
             rating.setOptions(Arrays.asList("Sehr gut", "Gut", "Mittel", "Schlecht"));
 

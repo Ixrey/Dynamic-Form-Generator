@@ -7,7 +7,7 @@ public class JacksonTest {
     public static void main(String[] args) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
 
-        var node = mapper.readTree(new File("test.json"));
+        var node = mapper.readTree(new File("forms/Kunden-Feedback.json"));
         System.out.println(node);
     }
 }
