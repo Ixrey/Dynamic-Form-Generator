@@ -33,6 +33,7 @@ public class FormGuiBuilder {
             } else {
                 lblField = new JLabel(labelText);
             }
+
             gbc.gridx = 0;
             gbc.gridy = row;
             gbc.weightx = 0;

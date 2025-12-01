@@ -7,7 +7,6 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gui.FormGuiBuilder;
 import gui.MainWindow;
