@@ -3,7 +3,6 @@
     "fields": [
         {
             "id": "name",
-            "label": "Name",
             "controlType": "textfield",
             "dataType": "string",
             "required": true
