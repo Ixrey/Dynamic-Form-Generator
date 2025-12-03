@@ -128,4 +128,62 @@ public class FormGuiBuilder {
                 return null;
         }
     }
+
+    public void applyValues(Map<String, Object> values) {
+        if (currentFormDefinition == null) {
+            return;
+        }
+
+        for (FormField field : currentFormDefinition.getFields()) {
+            String label = field.getLabel();
+            String id = field.getId();
+
+            Object value = values.get(label);
+
+            if (value == null) {
+                continue;
+            }
+
+            JComponent component = componentsById.get(id);
+
+            if (component == null) {
+                continue;
+            }
+
+            applyValueToComponent(field, component, value);
+        }
+    }
+
+    private void applyValueToComponent(FormField field, JComponent component, Object value) {
+        switch (field.getControlType()) {
+            case TEXTFIELD:
+            case TEXTAREA:
+                if (component instanceof JTextComponent textComp) {
+                    textComp.setText(value != null ? value.toString() : "");
+                }
+                break;
+            case CHECKBOX:
+                if (component instanceof JCheckBox checkBox) {
+                    if (value instanceof Boolean b) {
+                        checkBox.setSelected(b);
+                    } else {
+                        checkBox.setSelected(Boolean.parseBoolean(value.toString()));
+                    }
+                }
+                break;
+            case DROPDOWN:
+                if (component instanceof JComboBox<?> comboBox) {
+                    comboBox.setSelectedItem(value);
+                }
+                break;
+            case SPINNER:
+            case DATE:
+                if (component instanceof JSpinner spinner) {
+                    spinner.setValue(value);
+                }
+                break;
+            default:
+        }
+
+    }
 }

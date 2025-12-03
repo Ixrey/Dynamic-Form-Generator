@@ -3,11 +3,14 @@ package gui;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -85,5 +88,19 @@ public class MainWindow extends JFrame {
 
     public void showErrorMessage(String message) {
         JOptionPane.showMessageDialog(this, message, "Fehler", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public File chooseFormToOpen() {
+        JFileChooser chooser = new JFileChooser(new File("forms"));
+        chooser.setDialogTitle("Formulardatei auswählen");
+
+        chooser.setFileFilter(new FileNameExtensionFilter("JSON-Dateien", "json"));
+
+        int result = chooser.showOpenDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            return chooser.getSelectedFile();
+        }
+        return null;
     }
 }

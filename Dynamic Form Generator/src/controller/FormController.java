@@ -26,7 +26,7 @@ public class FormController {
     private final JsonWriter jsonWriter;
     private FormDefinition currentFormDefinition;
 
-    private File file = new File("forms/Kunden-Feedback.json");
+    // private File file = new File("forms/Kunden-Feedback.json");
 
     public FormController(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
@@ -45,6 +45,12 @@ public class FormController {
 
     public void handleLoadForm() {
         try {
+            File file = mainWindow.chooseFormToOpen();
+
+            if (file == null) {
+                return;
+            }
+
             JsonNode node = jsonReader.readRaw(file);
             List<String> errors = validator.validate(node);
 
@@ -89,7 +95,30 @@ public class FormController {
     }
 
     public void handleLoadResult() {
+        if (currentFormDefinition == null) {
+            mainWindow.showErrorMessage("Bitte laden Sie zuerst ein Formular, bevor Ergebnisdaten geladen werden.");
+            return;
+        }
 
+        File file = new File("results/Kunden-Feedback-result.json");
+
+        if (!file.exists()) {
+            mainWindow.showErrorMessage("Es wurde noch keine Ergebnis-Datei gefunden.");
+            return;
+        }
+
+        try {
+            JsonNode node = jsonReader.readRaw(file);
+
+            FormResult result = jsonReader.mapToFormResult(node);
+
+            guiBuilder.applyValues(result.getValues());
+
+            mainWindow.showInfoMessage("Ergebnisdaten wurden in das Formular geladen.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            mainWindow.showErrorMessage("Beim Laden der Ergebnis-Datei ist ein Fehler aufgetreten.");
+        }
     }
 
 }
