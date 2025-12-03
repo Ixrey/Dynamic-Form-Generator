@@ -3,17 +3,25 @@ package gui;
 import model.FormDefinition;
 import model.FormField;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 public class FormGuiBuilder {
+    private final Map<String, JComponent> componentsById = new LinkedHashMap<>();
+    private FormDefinition currentFormDefinition;
 
     public JPanel buildFormPanel(FormDefinition formDefinition) {
+        this.currentFormDefinition = formDefinition;
+        componentsById.clear();
+
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 50);
@@ -27,12 +35,15 @@ public class FormGuiBuilder {
             boolean required = field.isRequired();
             String labelText = field.getLabel();
             JLabel lblField;
+            JComponent controlType = createControlTypeForField(field);
 
             if (required) {
                 lblField = new JLabel(labelText + " *");
             } else {
                 lblField = new JLabel(labelText);
             }
+
+            componentsById.put(field.getId(), controlType);
 
             gbc.gridx = 0;
             gbc.gridy = row;
@@ -41,7 +52,7 @@ public class FormGuiBuilder {
 
             gbc.gridx = 1;
             gbc.weightx = 1;
-            panel.add(createControlTypeForField(field), gbc);
+            panel.add(controlType, gbc);
 
             row++;
         }
@@ -81,5 +92,40 @@ public class FormGuiBuilder {
         JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spinner);
         spinner.setEditor(editor);
         return spinner;
+    }
+
+    public Map<String, Object> getCurrentValues() {
+        Map<String, Object> values = new LinkedHashMap<>();
+
+        for (FormField field : currentFormDefinition.getFields()) {
+            String id = field.getId();
+            String label = field.getLabel();
+
+            JComponent component = componentsById.get(id);
+            if (component == null) {
+                continue;
+            }
+
+            Object value = extractValue(field, component);
+            values.put(label, value);
+        }
+        return values;
+    }
+
+    private Object extractValue(FormField field, JComponent component) {
+        switch (field.getControlType()) {
+            case TEXTFIELD:
+            case TEXTAREA:
+                return ((JTextComponent) component).getText();
+            case CHECKBOX:
+                return ((JCheckBox) component).isSelected();
+            case DATE:
+            case SPINNER:
+                return ((JSpinner) component).getValue();
+            case DROPDOWN:
+                return ((JComboBox<?>) component).getSelectedItem();
+            default:
+                return null;
+        }
     }
 }

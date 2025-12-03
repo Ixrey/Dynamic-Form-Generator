@@ -39,12 +39,12 @@ public class MainWindow extends JFrame {
         JPanel toolBar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
         btnLoadForm = new JButton("Formular Laden");
-        btnLoadResult = new JButton("Ergebnis Speichern");
-        btnSaveResult = new JButton("Ergebnis Laden");
+        btnLoadResult = new JButton("Ergebnis Laden");
+        btnSaveResult = new JButton("Ergebnis Speichern");
 
         toolBar.add(btnLoadForm);
-        toolBar.add(btnLoadResult);
         toolBar.add(btnSaveResult);
+        toolBar.add(btnLoadResult);
 
         formContainer = new JPanel(new BorderLayout());
 
@@ -77,5 +77,13 @@ public class MainWindow extends JFrame {
     public void showValidationErrors(List<String> errors) {
         String message = String.join("\n", errors);
         JOptionPane.showMessageDialog(this, message, "Fehler beim Laden", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void showInfoMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "Information", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void showErrorMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "Fehler", JOptionPane.ERROR_MESSAGE);
     }
 }

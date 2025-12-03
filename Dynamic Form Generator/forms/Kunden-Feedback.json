@@ -3,6 +3,7 @@
     "fields": [
         {
             "id": "name",
+            "label": "Name",
             "controlType": "textfield",
             "dataType": "string",
             "required": true
@@ -17,7 +18,7 @@
         {
             "id": "age",
             "label": "Alter",
-            "controlType": "spinner",
+            "controlType": "date",
             "dataType": "int",
             "required": false
         },
