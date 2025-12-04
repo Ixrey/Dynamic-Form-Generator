@@ -3,6 +3,7 @@ package gui;
 import model.FormDefinition;
 import model.FormField;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,8 @@ import javax.swing.text.JTextComponent;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class FormGuiBuilder {
     private final Map<String, JComponent> componentsById = new LinkedHashMap<>();
@@ -177,9 +180,25 @@ public class FormGuiBuilder {
                 }
                 break;
             case SPINNER:
-            case DATE:
                 if (component instanceof JSpinner spinner) {
                     spinner.setValue(value);
+                }
+                break;
+            case DATE:
+                if (component instanceof JSpinner spinner) {
+                    Object val = value;
+                    if (val instanceof Long l) {
+                        spinner.setValue(new Date(l));
+                    } else if (val instanceof Date d) {
+                        spinner.setValue(d);
+                    } else if (val instanceof String s) {
+                        SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+                        try {
+                            spinner.setValue(df.parse(s));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
                 break;
             default:

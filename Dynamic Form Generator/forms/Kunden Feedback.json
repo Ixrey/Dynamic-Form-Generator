@@ -18,7 +18,7 @@
         {
             "id": "age",
             "label": "Alter",
-            "controlType": "date",
+            "controlType": "spinner",
             "dataType": "int",
             "required": false
         },

@@ -1,5 +1,5 @@
 {
-    "formTitle": "Produktbestellung / Firmenanfrage",
+    "formTitle": "Produktbestellung",
     "fields": [
         {
             "id": "companyName",
