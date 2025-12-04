@@ -1,0 +1,47 @@
+{
+    "formTitle": "Mitarbeiter-Onboarding",
+    "fields": [
+        {
+            "id": "firstname",
+            "label": "Vorname",
+            "controlType": "textfield",
+            "dataType": "string",
+            "required": true
+        },
+        {
+            "id": "lastname",
+            "label": "Nachname",
+            "controlType": "textfield",
+            "dataType": "string",
+            "required": true
+        },
+        {
+            "id": "birthdate",
+            "label": "Geburtsdatum",
+            "controlType": "date",
+            "dataType": "date",
+            "required": true
+        },
+        {
+            "id": "department",
+            "label": "Abteilung",
+            "controlType": "dropdown",
+            "dataType": "string",
+            "required": true,
+            "options": [
+                "IT",
+                "Marketing",
+                "Finance",
+                "HR",
+                "Logistik"
+            ]
+        },
+        {
+            "id": "fulltime",
+            "label": "Vollzeitbeschäftigung",
+            "controlType": "checkbox",
+            "dataType": "boolean",
+            "required": false
+        }
+    ]
+}

@@ -77,13 +77,14 @@ public class FormController {
 
         FormResult result = new FormResult();
         result.setFormTitle(currentFormDefinition.getFormTitle());
-
-        String timestamp = LocalDateTime.now().toString();
-        result.setSubmittedAt(timestamp);
-
+        result.setSubmittedAt(LocalDateTime.now().toString());
         result.setValues(values);
 
-        File file = new File("results/Kunden-Feedback-result.json");
+        File file = mainWindow.chooseResultFileToSave();
+
+        if (file == null) {
+            return;
+        }
 
         try {
             jsonWriter.writeFormResult(result, file);
@@ -100,20 +101,16 @@ public class FormController {
             return;
         }
 
-        File file = new File("results/Kunden-Feedback-result.json");
+        File file = mainWindow.chooseResultFileToOpen();
 
-        if (!file.exists()) {
-            mainWindow.showErrorMessage("Es wurde noch keine Ergebnis-Datei gefunden.");
+        if (file == null) {
             return;
         }
 
         try {
             JsonNode node = jsonReader.readRaw(file);
-
             FormResult result = jsonReader.mapToFormResult(node);
-
             guiBuilder.applyValues(result.getValues());
-
             mainWindow.showInfoMessage("Ergebnisdaten wurden in das Formular geladen.");
         } catch (IOException e) {
             e.printStackTrace();

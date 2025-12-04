@@ -1,0 +1,67 @@
+{
+    "formTitle": "Bewerbung / Kontaktaufnahme",
+    "fields": [
+        {
+            "id": "fullName",
+            "label": "Vollständiger Name",
+            "controlType": "textfield",
+            "dataType": "string",
+            "required": true
+        },
+        {
+            "id": "email",
+            "label": "E-Mail",
+            "controlType": "textfield",
+            "dataType": "string",
+            "required": true
+        },
+        {
+            "id": "phone",
+            "label": "Telefonnummer",
+            "controlType": "textfield",
+            "dataType": "string",
+            "required": false
+        },
+        {
+            "id": "position",
+            "label": "Bewerbung für Position",
+            "controlType": "dropdown",
+            "dataType": "string",
+            "required": true,
+            "options": [
+                "Softwareentwickler",
+                "IT-Administrator",
+                "Datenanalyst",
+                "Projektmanager"
+            ]
+        },
+        {
+            "id": "relocation",
+            "label": "Umzugsbereitschaft",
+            "controlType": "checkbox",
+            "dataType": "boolean",
+            "required": false
+        },
+        {
+            "id": "experience",
+            "label": "Berufserfahrung (Jahre)",
+            "controlType": "spinner",
+            "dataType": "int",
+            "required": false
+        },
+        {
+            "id": "startDate",
+            "label": "Bevorzugter Starttermin",
+            "controlType": "date",
+            "dataType": "date",
+            "required": false
+        },
+        {
+            "id": "coverLetter",
+            "label": "Motivationsschreiben",
+            "controlType": "textarea",
+            "dataType": "string",
+            "required": true
+        }
+    ]
+}

@@ -1,0 +1,52 @@
+{
+    "formTitle": "Support-Ticket",
+    "fields": [
+        {
+            "id": "title",
+            "label": "Titel des Problems",
+            "controlType": "textfield",
+            "dataType": "string",
+            "required": true
+        },
+        {
+            "id": "priority",
+            "label": "Priorität",
+            "controlType": "dropdown",
+            "dataType": "string",
+            "required": true,
+            "options": [
+                "Niedrig",
+                "Mittel",
+                "Hoch",
+                "Kritisch"
+            ]
+        },
+        {
+            "id": "category",
+            "label": "Kategorie",
+            "controlType": "dropdown",
+            "dataType": "string",
+            "required": false,
+            "options": [
+                "Software",
+                "Hardware",
+                "Netzwerk",
+                "Sonstiges"
+            ]
+        },
+        {
+            "id": "affectedUsers",
+            "label": "Betroffene Benutzer (geschätzte Anzahl)",
+            "controlType": "spinner",
+            "dataType": "int",
+            "required": false
+        },
+        {
+            "id": "description",
+            "label": "Problembeschreibung",
+            "controlType": "textarea",
+            "dataType": "string",
+            "required": true
+        }
+    ]
+}

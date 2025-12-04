@@ -103,4 +103,36 @@ public class MainWindow extends JFrame {
         }
         return null;
     }
+
+    public File chooseResultFileToSave() {
+        JFileChooser chooser = new JFileChooser(new File("results"));
+        chooser.setDialogTitle("Ergebnisdatei Speichern");
+
+        chooser.setFileFilter(new FileNameExtensionFilter("JSON-Dateien", "json"));
+
+        int result = chooser.showSaveDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+
+            if (!file.getName().toLowerCase().endsWith(".json")) {
+                file = new File(file.getParentFile(), file.getName() + ".json");
+            }
+            return file;
+        }
+        return null;
+    }
+
+    public File chooseResultFileToOpen() {
+        JFileChooser chooser = new JFileChooser(new File("results"));
+        chooser.setDialogTitle("Ergebnisdatei auswählen");
+
+        chooser.setFileFilter(new FileNameExtensionFilter("JSON-Dateien", "json"));
+
+        int result = chooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            return chooser.getSelectedFile();
+        }
+        return null;
+    }
+
 }

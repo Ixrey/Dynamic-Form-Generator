@@ -1,0 +1,136 @@
+{
+    "formTitle": "Produktbestellung / Firmenanfrage",
+    "fields": [
+        {
+            "id": "companyName",
+            "label": "Firmenname",
+            "controlType": "textfield",
+            "dataType": "string",
+            "required": true
+        },
+        {
+            "id": "contactPerson",
+            "label": "Kontaktperson",
+            "controlType": "textfield",
+            "dataType": "string",
+            "required": true
+        },
+        {
+            "id": "email",
+            "label": "E-Mail-Adresse",
+            "controlType": "textfield",
+            "dataType": "string",
+            "required": true
+        },
+        {
+            "id": "phone",
+            "label": "Telefonnummer",
+            "controlType": "textfield",
+            "dataType": "string",
+            "required": false
+        },
+        {
+            "id": "department",
+            "label": "Abteilung",
+            "controlType": "dropdown",
+            "dataType": "string",
+            "required": false,
+            "options": [
+                "IT",
+                "Einkauf",
+                "Vertrieb",
+                "Produktion",
+                "Management"
+            ]
+        },
+        {
+            "id": "productCategory",
+            "label": "Produktkategorie",
+            "controlType": "dropdown",
+            "dataType": "string",
+            "required": true,
+            "options": [
+                "Server",
+                "Workstations",
+                "Zubehör",
+                "Netzwerkgeräte",
+                "Softwarelizenzen"
+            ]
+        },
+        {
+            "id": "productModel",
+            "label": "Gewünschtes Modell",
+            "controlType": "textfield",
+            "dataType": "string",
+            "required": false
+        },
+        {
+            "id": "quantity",
+            "label": "Menge",
+            "controlType": "spinner",
+            "dataType": "int",
+            "required": true
+        },
+        {
+            "id": "deliveryDate",
+            "label": "Lieferdatum (Wunsch)",
+            "controlType": "date",
+            "dataType": "date",
+            "required": false
+        },
+        {
+            "id": "priority",
+            "label": "Dringlichkeit",
+            "controlType": "dropdown",
+            "dataType": "string",
+            "required": true,
+            "options": [
+                "Niedrig",
+                "Normal",
+                "Hoch",
+                "Sehr hoch"
+            ]
+        },
+        {
+            "id": "customConfig",
+            "label": "Individuelle Konfiguration erforderlich?",
+            "controlType": "checkbox",
+            "dataType": "boolean",
+            "required": false
+        },
+        {
+            "id": "configDetails",
+            "label": "Details zur individuellen Konfiguration",
+            "controlType": "textarea",
+            "dataType": "string",
+            "required": false
+        },
+        {
+            "id": "budget",
+            "label": "Budgetrahmen (EUR)",
+            "controlType": "spinner",
+            "dataType": "int",
+            "required": false
+        },
+        {
+            "id": "paymentMethod",
+            "label": "Bevorzugte Zahlungsart",
+            "controlType": "dropdown",
+            "dataType": "string",
+            "required": false,
+            "options": [
+                "Rechnung",
+                "Vorkasse",
+                "Lastschrift",
+                "Kreditkarte"
+            ]
+        },
+        {
+            "id": "notes",
+            "label": "Weitere Hinweise",
+            "controlType": "textarea",
+            "dataType": "string",
+            "required": false
+        }
+    ]
+}
