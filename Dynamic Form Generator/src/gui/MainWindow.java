@@ -5,7 +5,9 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -121,7 +123,7 @@ public class MainWindow extends JFrame {
         btnSaveResult.addActionListener(listener);
     }
 
-    public void showValidationErrors(List<String> errors) {
+    public void showValidationErrors(Collection<String> errors) {
         String message = String.join("\n", errors);
         JOptionPane.showMessageDialog(this, message, "Fehler beim Laden", JOptionPane.ERROR_MESSAGE);
     }
@@ -135,7 +137,7 @@ public class MainWindow extends JFrame {
     }
 
     public File chooseFormToOpen() {
-        JFileChooser chooser = new JFileChooser(new File("forms"));
+        JFileChooser chooser = new JFileChooser();
         chooser.setDialogTitle("Formulardatei auswählen");
 
         chooser.setFileFilter(new FileNameExtensionFilter("JSON-Dateien", "json"));
@@ -149,7 +151,7 @@ public class MainWindow extends JFrame {
     }
 
     public File chooseResultFileToSave() {
-        JFileChooser chooser = new JFileChooser(new File("results"));
+        JFileChooser chooser = new JFileChooser();
         chooser.setDialogTitle("Ergebnisdatei Speichern");
 
         chooser.setFileFilter(new FileNameExtensionFilter("JSON-Dateien", "json"));
@@ -167,7 +169,7 @@ public class MainWindow extends JFrame {
     }
 
     public File chooseResultFileToOpen() {
-        JFileChooser chooser = new JFileChooser(new File("results"));
+        JFileChooser chooser = new JFileChooser();
         chooser.setDialogTitle("Ergebnisdatei auswählen");
 
         chooser.setFileFilter(new FileNameExtensionFilter("JSON-Dateien", "json"));

@@ -231,9 +231,17 @@ public class FormGuiBuilder {
         JComponent component = componentsById.get(fieldId);
 
         if (component != null) {
-            component.setBorder(new LineBorder(Color.RED, 2));
+            component.setBorder(new LineBorder(Color.RED, 1));
         }
 
         component.setToolTipText(errorMessage);
+    }
+
+    public void clearValidationMarks() {
+        for (JComponent comp : componentsById.values()) {
+            comp.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextField.border"));
+            comp.setToolTipText(null);
+        }
+
     }
 }

@@ -17,6 +17,7 @@ import gui.MainWindow;
 import io.JsonReader;
 import io.JsonWriter;
 import model.FormDefinition;
+import model.FormField;
 import model.FormResult;
 import validation.FormDefinitionValidator;
 import validation.FormInputValidator;
@@ -83,10 +84,10 @@ public class FormController {
 
         Map<String, Object> values = guiBuilder.getCurrentValues();
 
-        List<String> errors = inputValidator.validate(currentFormDefinition, values);
+        Map<String, String> errors = inputValidator.validate(currentFormDefinition, values);
         if (!errors.isEmpty()) {
-            guiBuilder.highlightFieldErrors(currentFormDefinition, values);
-            mainWindow.showValidationErrors(errors);
+            highlightFieldErrors(currentFormDefinition, values);
+            mainWindow.showValidationErrors(errors.values());
             return;
         }
 
@@ -107,6 +108,20 @@ public class FormController {
         } catch (IOException e) {
             mainWindow.showErrorMessage("Das Formular konnte nicht gespeichert werden.");
             e.printStackTrace();
+        }
+    }
+
+    private void highlightFieldErrors(FormDefinition currentFormDefinition2, Map<String, Object> values) {
+        guiBuilder.clearValidationMarks();
+        for (FormField field : currentFormDefinition.getFields()) {
+            if (field.isRequired()) {
+                Object value = values.get(field.getLabel());
+                boolean empty = (value == null) || value.toString().trim().isEmpty();
+
+                if (empty) {
+                    guiBuilder.markFieldInvalid(field.getId(), "Pflichtfeld darf nicht leer sein");
+                }
+            }
         }
     }
 
@@ -144,10 +159,10 @@ public class FormController {
                 return;
             }
 
-            List<String> errors = inputValidator.validate(currentFormDefinition, result.getValues());
+            Map<String, String> errors = inputValidator.validate(currentFormDefinition, result.getValues());
 
             if (!errors.isEmpty()) {
-                mainWindow.showValidationErrors(errors);
+                mainWindow.showValidationErrors(errors.values());
                 return;
             }
 
@@ -170,7 +185,7 @@ public class FormController {
                 .replaceAll("[^a-z0-9]+", "-")
                 .replaceAll("^-|-$", "");
 
-        Path path = Paths.get("forms", slug + ".json");
+        Path path = Paths.get(slug + ".json");
         return path.toFile();
     }
 

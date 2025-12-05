@@ -1,8 +1,7 @@
 package validation;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import model.ControlType;
@@ -11,125 +10,123 @@ import model.FormDefinition;
 import model.FormField;
 
 public class FormInputValidator {
-    public List<String> validate(FormDefinition definition, Map<String, Object> values) {
-        List<String> errors = new ArrayList<>();
+
+    public Map<String, String> validate(FormDefinition definition, Map<String, Object> values) {
+        Map<String, String> errors = new HashMap<>();
 
         if (definition == null) {
-            errors.add("Keine Formulardefinition vorhanden.");
+            errors.put("GLOBAL", "Keine Formulardefinition vorhanden.");
             return errors;
         }
 
         if (values == null) {
-            errors.add("Es wurden keine Eingabewerte übergeben.");
+            errors.put("GLOBAL", "Es wurden keine Eingabewerte übergeben.");
             return errors;
         }
 
         for (FormField field : definition.getFields()) {
             String label = field.getLabel();
-            boolean required = field.isRequired();
-            DataType dataType = field.getDataType();
-            ControlType controlType = field.getControlType();
-
             Object value = values.get(label);
 
-            boolean isEmpty = value == null ||
-                    (value instanceof String s && s.isBlank());
+            boolean required = field.isRequired();
+            boolean isEmpty = value == null || (value instanceof String s && s.isBlank());
 
+            // --- Pflichtfeldprüfung ---
             if (isEmpty) {
                 if (required) {
-                    errors.add("Pflichtfeld \"" + label + "\" wurde nicht ausgefüllt.");
+                    errors.put(field.getId(),
+                            "Pflichtfeld \"" + label + "\" wurde nicht ausgefüllt.");
                 }
-                continue;
+                continue; // keine weiteren Prüfungen nötig
             }
 
-            validateDataType(label, dataType, value, errors);
+            // --- Datentypprüfung ---
+            validateDataType(field, value, errors);
 
-            if (controlType == ControlType.DROPDOWN) {
+            // --- Dropdownprüfung ---
+            if (field.getControlType() == ControlType.DROPDOWN) {
                 validateDropdownValue(field, value, errors);
             }
         }
+
         return errors;
     }
 
-    private void validateDataType(String label, DataType dataType, Object value, List<String> errors) {
+    private void validateDataType(FormField field, Object value, Map<String, String> errors) {
+        String label = field.getLabel();
+        DataType dataType = field.getDataType();
+
         switch (dataType) {
             case STRING:
                 break;
+
             case INT:
-                if (value instanceof Number) {
+                if (value instanceof Number)
                     break;
-                }
                 if (value instanceof String s) {
                     try {
                         Integer.parseInt(s.trim());
                     } catch (NumberFormatException e) {
-                        errors.add("Feld \"" + label + "\" erwartet eine ganze Zahl.");
+                        errors.put(field.getId(),
+                                "Feld \"" + label + "\" erwartet eine ganze Zahl.");
                     }
                     break;
                 }
-                errors.add("Feld \"" + label + "\" erwartet eine ganze Zahl.");
+                errors.put(field.getId(),
+                        "Feld \"" + label + "\" erwartet eine ganze Zahl.");
                 break;
+
             case FLOAT:
-                if (value instanceof Number) {
+                if (value instanceof Number)
                     break;
-                }
-                if (value instanceof String s) {
-                    String normalized = s.trim().replace(',', '.');
+                if (value instanceof String s2) {
                     try {
-                        Double.parseDouble(normalized);
+                        Double.parseDouble(s2.trim().replace(',', '.'));
                     } catch (NumberFormatException e) {
-                        errors.add("Feld \"" + label + "\" erwartet eine Kommazahl.");
+                        errors.put(field.getId(),
+                                "Feld \"" + label + "\" erwartet eine Kommazahl.");
                     }
                     break;
                 }
-                errors.add("Feld \"" + label + "\" erwartet eine Kommazahl.");
+                errors.put(field.getId(),
+                        "Feld \"" + label + "\" erwartet eine Kommazahl.");
                 break;
 
             case BOOLEAN:
-                if (value instanceof Boolean) {
+                if (value instanceof Boolean)
                     break;
-                }
-                if (value instanceof String s) {
-                    String lower = s.trim().toLowerCase();
+                if (value instanceof String s3) {
+                    String lower = s3.trim().toLowerCase();
                     if (!lower.equals("true") && !lower.equals("false")) {
-                        errors.add("Feld \"" + label + "\" erwartet einen Wahrheitswert (true/false).");
+                        errors.put(field.getId(),
+                                "Feld \"" + label + "\" erwartet true oder false.");
                     }
                     break;
                 }
-                errors.add("Feld \"" + label + "\" erwartet einen Wahrheitswert (true/false).");
+                errors.put(field.getId(),
+                        "Feld \"" + label + "\" erwartet true oder false.");
                 break;
 
             case DATE:
-
-                if (value instanceof Date) {
+                if (value instanceof Date || value instanceof Long || value instanceof String) {
                     break;
                 }
-                if (value instanceof Long) {
-                    break;
-                }
-                if (value instanceof String) {
-                    break;
-                }
-                errors.add("Feld \"" + label + "\" erwartet ein Datum.");
-                break;
-
-            default:
+                errors.put(field.getId(),
+                        "Feld \"" + label + "\" erwartet ein Datum.");
                 break;
         }
     }
 
-    private void validateDropdownValue(FormField field, Object value, List<String> errors) {
-        if (value == null) {
+    private void validateDropdownValue(FormField field, Object value, Map<String, String> errors) {
+        if (value == null)
             return;
-        }
-
-        if (field.getOptions() == null || field.getOptions().isEmpty()) {
+        if (field.getOptions() == null || field.getOptions().isEmpty())
             return;
-        }
 
         String valueText = value.toString();
         if (!field.getOptions().contains(valueText)) {
-            errors.add("Wert \"" + valueText + "\" ist keine gültige Option für Feld \"" + field.getLabel() + "\".");
+            errors.put(field.getId(),
+                    "Wert \"" + valueText + "\" ist keine gültige Option für \"" + field.getLabel() + "\".");
         }
     }
 }
