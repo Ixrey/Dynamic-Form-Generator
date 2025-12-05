@@ -2,6 +2,7 @@ package controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -30,6 +31,7 @@ public class FormController {
     private final FormGuiBuilder guiBuilder;
     private final JsonWriter jsonWriter;
     private FormDefinition currentFormDefinition;
+    private File currentFormFile;
 
     public FormController(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
@@ -69,6 +71,7 @@ public class FormController {
 
         if (errors.isEmpty()) {
             currentFormDefinition = jsonReader.mapToFormDefinition(node);
+            currentFormFile = file;
             JPanel panel = guiBuilder.buildFormPanel(currentFormDefinition);
             mainWindow.showFormPanel(panel);
         } else {
@@ -95,6 +98,10 @@ public class FormController {
         result.setFormTitle(currentFormDefinition.getFormTitle());
         result.setSubmittedAt(LocalDateTime.now().toString());
         result.setValues(values);
+
+        if (currentFormFile != null) {
+            result.setFormDefinitionPath(currentFormFile.getAbsolutePath());
+        }
 
         File file = mainWindow.chooseResultFileToSave();
 
@@ -136,18 +143,19 @@ public class FormController {
             JsonNode node = jsonReader.readRaw(file);
             FormResult result = jsonReader.mapToFormResult(node);
 
-            String formTitle = result.getFormTitle();
+            String formPath = result.getFormDefinitionPath();
 
-            if (formTitle == null || formTitle.isBlank()) {
-                mainWindow.showErrorMessage("Die Ergebnis-Datei enthält keinen gültigen Formulartitel");
+            if (formPath == null || formPath.isBlank()) {
+                mainWindow
+                        .showErrorMessage("In der Ergebnisdatei ist kein Verweis auf die Formulardatei gespeichert.\n" +
+                                "Das Ergebnis kann ohne passende Formulardefinition nicht geladen werden");
                 return;
             }
 
-            File formFile = resolveFormFileForTitle(formTitle);
-
+            File formFile = new File(formPath);
             if (!formFile.exists()) {
                 mainWindow.showErrorMessage(
-                        "Es konnte keine passende Formulardatei für \"" + formTitle + "\" gefunden werden.\n"
+                        "Es konnte keine passende Formulardatei für \"" + formPath + "\" gefunden werden.\n"
                                 + "Erwartete Datei: " + formFile.getAbsolutePath());
                 return;
             }
@@ -173,20 +181,6 @@ public class FormController {
             e.printStackTrace();
             mainWindow.showErrorMessage("Beim Laden der Ergebnis-Datei ist ein Fehler aufgetreten.");
         }
-    }
-
-    private File resolveFormFileForTitle(String formTitle) {
-        String slug = formTitle
-                .toLowerCase()
-                .replace("ä", "ae")
-                .replace("ö", "oe")
-                .replace("ü", "ue")
-                .replace("ß", "ss")
-                .replaceAll("[^a-z0-9]+", "-")
-                .replaceAll("^-|-$", "");
-
-        Path path = Paths.get(slug + ".json");
-        return path.toFile();
     }
 
 }

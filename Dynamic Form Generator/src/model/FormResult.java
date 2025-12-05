@@ -6,6 +6,7 @@ public class FormResult {
     private String formTitle;
     private String submittedAt;
     private Map<String, Object> values;
+    private String formDefinitionPath;
 
     public String getFormTitle() {
         return formTitle;
@@ -29,5 +30,13 @@ public class FormResult {
 
     public void setValues(Map<String, Object> values) {
         this.values = values;
+    }
+
+    public String getFormDefinitionPath() {
+        return formDefinitionPath;
+    }
+
+    public void setFormDefinitionPath(String formDefinitionPath) {
+        this.formDefinitionPath = formDefinitionPath;
     }
 }
