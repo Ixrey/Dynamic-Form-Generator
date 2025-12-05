@@ -9,8 +9,14 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
 import javax.swing.text.JTextComponent;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -18,16 +24,17 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class FormGuiBuilder {
-    private final Map<String, JComponent> componentsById = new LinkedHashMap<>();
+    private Map<String, JComponent> componentsById = new LinkedHashMap<>();
     private FormDefinition currentFormDefinition;
 
     public JPanel buildFormPanel(FormDefinition formDefinition) {
         this.currentFormDefinition = formDefinition;
         componentsById.clear();
 
-        JPanel panel = new JPanel(new GridBagLayout());
+        JPanel fieldsPanel = new JPanel(new GridBagLayout());
+        fieldsPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 50);
+        gbc.insets = new Insets(8, 8, 8, 15);
         gbc.anchor = GridBagConstraints.LINE_START;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         int row = 0;
@@ -41,7 +48,7 @@ public class FormGuiBuilder {
             JComponent controlType = createControlTypeForField(field);
 
             if (required) {
-                lblField = new JLabel(labelText + " *");
+                lblField = new JLabel("<html>" + labelText + " <span style='color:red;'>*</span></html>");
             } else {
                 lblField = new JLabel(labelText);
             }
@@ -51,23 +58,38 @@ public class FormGuiBuilder {
             gbc.gridx = 0;
             gbc.gridy = row;
             gbc.weightx = 0;
-            panel.add(lblField, gbc);
+            fieldsPanel.add(lblField, gbc);
 
             gbc.gridx = 1;
             gbc.weightx = 1;
-            panel.add(controlType, gbc);
+            fieldsPanel.add(controlType, gbc);
 
             row++;
         }
+
+        JPanel panel = new JPanel(new BorderLayout(0, 10));
+
+        JLabel titleLabel = new JLabel(formDefinition.getFormTitle());
+        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 20f));
+        titleLabel.setBorder(new MatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
+
+        panel.add(titleLabel, BorderLayout.NORTH);
+        panel.add(fieldsPanel, BorderLayout.CENTER);
+
         return panel;
     }
 
     public JComponent createControlTypeForField(FormField field) {
         switch (field.getControlType()) {
             case TEXTFIELD:
-                return new JTextField();
+                JTextField textField = new JTextField();
+                textField.setColumns(20);
+                return textField;
             case TEXTAREA:
-                return new JTextArea();
+                JTextArea textArea = new JTextArea(3, 20);
+                textArea.setLineWrap(true);
+                textArea.setWrapStyleWord(true);
+                return textArea;
             case CHECKBOX:
                 return new JCheckBox();
             case DATE:
@@ -203,6 +225,15 @@ public class FormGuiBuilder {
                 break;
             default:
         }
+    }
 
+    public void markFieldInvalid(String fieldId, String errorMessage) {
+        JComponent component = componentsById.get(fieldId);
+
+        if (component != null) {
+            component.setBorder(new LineBorder(Color.RED, 2));
+        }
+
+        component.setToolTipText(errorMessage);
     }
 }

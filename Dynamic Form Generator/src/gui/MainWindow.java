@@ -1,15 +1,21 @@
 package gui;
 
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.List;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -31,7 +37,7 @@ public class MainWindow extends JFrame {
 
     public void initializeWindow() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600, 400);
+        setSize(700, 500);
         setLocationRelativeTo(null);
     }
 
@@ -39,28 +45,66 @@ public class MainWindow extends JFrame {
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
 
-        JPanel toolBar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JLabel hint = new JLabel("* Pflichtfeld");
+        hint.setBorder(new EmptyBorder(0, 10, 5, 0));
 
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         btnLoadForm = new JButton("Formular Laden");
         btnLoadResult = new JButton("Ergebnis Laden");
         btnSaveResult = new JButton("Ergebnis Speichern");
 
-        toolBar.add(btnLoadForm);
-        toolBar.add(btnSaveResult);
-        toolBar.add(btnLoadResult);
+        buttonPanel.add(btnLoadForm);
+        buttonPanel.add(btnSaveResult);
+        buttonPanel.add(btnLoadResult);
+
+        Dimension btnSize = new Dimension(150, 30);
+        btnLoadForm.setPreferredSize(btnSize);
+        btnSaveResult.setPreferredSize(btnSize);
+        btnLoadResult.setPreferredSize(btnSize);
+
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.add(hint, BorderLayout.WEST);
+        bottomPanel.add(buttonPanel, BorderLayout.EAST);
 
         formContainer = new JPanel(new BorderLayout());
+        formContainer.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        JLabel lblText = new JLabel("test");
-
-        formContainer.add(lblText, BorderLayout.CENTER);
+        formContainer.add(createWelcomePanel(), BorderLayout.CENTER);
         contentPane.add(formContainer, BorderLayout.CENTER);
-        contentPane.add(toolBar, BorderLayout.SOUTH);
+        contentPane.add(bottomPanel, BorderLayout.SOUTH);
+    }
+
+    private JPanel createWelcomePanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(new EmptyBorder(40, 40, 40, 40));
+
+        JLabel title = new JLabel("Dynamischer Formular-Generator");
+        title.setFont(title.getFont().deriveFont(20f));
+
+        JLabel subtitle = new JLabel(
+                "<html>" +
+                        "Wählen Sie über <b>\"Formular laden\"</b> eine Formulardefinition (JSON) aus.<br>" +
+                        "Über <b>\"Ergebnis laden\"</b> können Sie gespeicherte Eingaben wieder einlesen." +
+                        "</html>");
+
+        title.setAlignmentX(LEFT_ALIGNMENT);
+        subtitle.setAlignmentX(LEFT_ALIGNMENT);
+
+        panel.add(title);
+        panel.add(Box.createVerticalStrut(15));
+        panel.add(subtitle);
+
+        return panel;
     }
 
     public void showFormPanel(JPanel panel) {
         formContainer.removeAll();
-        formContainer.add(panel, BorderLayout.CENTER);
+
+        JScrollPane scrollPane = new JScrollPane(panel);
+        scrollPane.setBorder(null);
+
+        formContainer.add(scrollPane, BorderLayout.CENTER);
         formContainer.revalidate();
         formContainer.repaint();
     }
@@ -134,5 +178,4 @@ public class MainWindow extends JFrame {
         }
         return null;
     }
-
 }

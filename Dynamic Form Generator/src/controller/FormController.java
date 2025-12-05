@@ -30,8 +30,6 @@ public class FormController {
     private final JsonWriter jsonWriter;
     private FormDefinition currentFormDefinition;
 
-    // private File file = new File("forms/Kunden-Feedback.json");
-
     public FormController(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
         this.jsonReader = new JsonReader();
@@ -87,6 +85,7 @@ public class FormController {
 
         List<String> errors = inputValidator.validate(currentFormDefinition, values);
         if (!errors.isEmpty()) {
+            guiBuilder.highlightFieldErrors(currentFormDefinition, values);
             mainWindow.showValidationErrors(errors);
             return;
         }
