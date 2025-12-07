@@ -10,6 +10,7 @@ import model.FormDefinition;
 import model.FormField;
 
 public class FormInputValidator {
+    private static final String DROPDOWN_PLACEHOLDER = "-- Bitte wählen --";
 
     public Map<String, String> validate(FormDefinition definition, Map<String, Object> values) {
         Map<String, String> errors = new HashMap<>();
@@ -29,21 +30,20 @@ public class FormInputValidator {
             Object value = values.get(label);
 
             boolean required = field.isRequired();
-            boolean isEmpty = value == null || (value instanceof String s && s.isBlank());
+            boolean isPlaceholderSelected = field.getControlType() == ControlType.DROPDOWN && value instanceof String s
+                    && DROPDOWN_PLACEHOLDER.equals(s);
+            boolean isEmpty = value == null || (value instanceof String s && s.isBlank() || isPlaceholderSelected);
 
-            // --- Pflichtfeldprüfung ---
             if (isEmpty) {
                 if (required) {
                     errors.put(field.getId(),
                             "Pflichtfeld \"" + label + "\" wurde nicht ausgefüllt.");
                 }
-                continue; // keine weiteren Prüfungen nötig
+                continue;
             }
 
-            // --- Datentypprüfung ---
             validateDataType(field, value, errors);
 
-            // --- Dropdownprüfung ---
             if (field.getControlType() == ControlType.DROPDOWN) {
                 validateDropdownValue(field, value, errors);
             }

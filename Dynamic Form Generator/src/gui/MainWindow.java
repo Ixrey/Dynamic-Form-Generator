@@ -6,8 +6,6 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -16,7 +14,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JLabel;
@@ -29,6 +26,8 @@ public class MainWindow extends JFrame {
     JButton btnLoadForm;
     JButton btnLoadResult;
     JButton btnSaveResult;
+    private File lastFormDirectory;
+    private File lastResultDirectory;
 
     public MainWindow() {
         super("Dynamischer Formular Generator");
@@ -104,6 +103,8 @@ public class MainWindow extends JFrame {
         formContainer.removeAll();
 
         JScrollPane scrollPane = new JScrollPane(panel);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(15);
+        scrollPane.getHorizontalScrollBar().setUnitIncrement(15);
         scrollPane.setBorder(null);
 
         formContainer.add(scrollPane, BorderLayout.CENTER);
@@ -137,23 +138,26 @@ public class MainWindow extends JFrame {
     }
 
     public File chooseFormToOpen() {
-        JFileChooser chooser = new JFileChooser();
+        JFileChooser chooser = new JFileChooser(getPreferredStartDirectory(lastFormDirectory, "forms"));
         chooser.setDialogTitle("Formulardatei auswählen");
-
         chooser.setFileFilter(new FileNameExtensionFilter("JSON-Dateien", "json"));
 
         int result = chooser.showOpenDialog(this);
 
         if (result == JFileChooser.APPROVE_OPTION) {
-            return chooser.getSelectedFile();
+            File file = chooser.getSelectedFile();
+            lastFormDirectory = file.getParentFile();
+            return file;
         }
+
         return null;
     }
 
     public File chooseResultFileToSave() {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle("Ergebnisdatei Speichern");
+        JFileChooser chooser = new JFileChooser(
+                getPreferredStartDirectory(lastResultDirectory, "results"));
 
+        chooser.setDialogTitle("Ergebnisdatei speichern");
         chooser.setFileFilter(new FileNameExtensionFilter("JSON-Dateien", "json"));
 
         int result = chooser.showSaveDialog(this);
@@ -163,21 +167,44 @@ public class MainWindow extends JFrame {
             if (!file.getName().toLowerCase().endsWith(".json")) {
                 file = new File(file.getParentFile(), file.getName() + ".json");
             }
+
+            lastResultDirectory = file.getParentFile();
             return file;
         }
         return null;
     }
 
     public File chooseResultFileToOpen() {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle("Ergebnisdatei auswählen");
+        JFileChooser chooser = new JFileChooser(
+                getPreferredStartDirectory(lastResultDirectory, "results"));
 
+        chooser.setDialogTitle("Ergebnisdatei auswählen");
         chooser.setFileFilter(new FileNameExtensionFilter("JSON-Dateien", "json"));
 
         int result = chooser.showOpenDialog(this);
         if (result == JFileChooser.APPROVE_OPTION) {
-            return chooser.getSelectedFile();
+            File file = chooser.getSelectedFile();
+            lastResultDirectory = file.getParentFile();
+            return file;
         }
         return null;
+    }
+
+    private File getPreferredStartDirectory(File lastDir, String subFolderName) {
+        if (lastDir != null && lastDir.exists()) {
+            return lastDir;
+        }
+
+        File workingDir = new File(System.getProperty("user.dir"));
+
+        if (subFolderName != null && !subFolderName.isBlank()) {
+            File subDir = new File(workingDir, subFolderName);
+
+            if (subDir.exists() && subDir.isDirectory()) {
+                return subDir;
+            }
+        }
+
+        return workingDir;
     }
 }

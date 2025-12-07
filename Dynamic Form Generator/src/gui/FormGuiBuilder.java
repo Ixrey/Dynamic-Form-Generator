@@ -3,6 +3,7 @@ package gui;
 import model.FormDefinition;
 import model.FormField;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -95,12 +96,22 @@ public class FormGuiBuilder {
             case DATE:
                 return createDateSpinner();
             case DROPDOWN:
-                return new JComboBox<>(field.getOptions().toArray(new String[field.getOptions().size()]));
+                return createDropdown(field);
             case SPINNER:
                 return createNumberSpinner();
             default:
                 throw new IllegalArgumentException("Nicht unterstützer controlType: " + field.getControlType());
         }
+    }
+
+    private JComboBox<String> createDropdown(FormField field) {
+        List<String> items = new ArrayList<>();
+        items.add("-- Bitte wählen --");
+        items.addAll(field.getOptions());
+
+        JComboBox<String> combo = new JComboBox<>(items.toArray(new String[0]));
+        combo.setSelectedIndex(0);
+        return combo;
     }
 
     public JSpinner createDateSpinner() {
@@ -231,10 +242,11 @@ public class FormGuiBuilder {
         JComponent component = componentsById.get(fieldId);
 
         if (component != null) {
+            System.out.println("WARN: Kein Component für fieldId=" + fieldId);
             component.setBorder(new LineBorder(Color.RED, 1));
+            component.setToolTipText(errorMessage);
         }
 
-        component.setToolTipText(errorMessage);
     }
 
     public void clearValidationMarks() {
@@ -242,6 +254,5 @@ public class FormGuiBuilder {
             comp.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextField.border"));
             comp.setToolTipText(null);
         }
-
     }
 }

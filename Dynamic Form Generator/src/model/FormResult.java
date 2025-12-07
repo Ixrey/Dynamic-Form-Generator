@@ -5,8 +5,8 @@ import java.util.Map;
 public class FormResult {
     private String formTitle;
     private String submittedAt;
-    private Map<String, Object> values;
     private String formDefinitionPath;
+    private Map<String, Object> values;
 
     public String getFormTitle() {
         return formTitle;
@@ -24,19 +24,19 @@ public class FormResult {
         this.submittedAt = submittedAt;
     }
 
-    public Map<String, Object> getValues() {
-        return values;
-    }
-
-    public void setValues(Map<String, Object> values) {
-        this.values = values;
-    }
-
     public String getFormDefinitionPath() {
         return formDefinitionPath;
     }
 
     public void setFormDefinitionPath(String formDefinitionPath) {
         this.formDefinitionPath = formDefinitionPath;
+    }
+
+    public Map<String, Object> getValues() {
+        return values;
+    }
+
+    public void setValues(Map<String, Object> values) {
+        this.values = values;
     }
 }
