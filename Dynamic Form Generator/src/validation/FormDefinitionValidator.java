@@ -1,7 +1,9 @@
 package validation;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -24,7 +26,18 @@ public class FormDefinitionValidator {
 
         JsonNode fields = root.get("fields");
 
+        Set<String> ids = new HashSet<>();
+
         for (int i = 0; i < fields.size(); i++) {
+            JsonNode field = fields.get(i);
+
+            if (field.has("id") && field.get("id").isTextual()) {
+                String idValue = field.get("id").asText();
+
+                if (!ids.add(idValue)) {
+                    errors.add("Feld " + i + ": id '" + idValue + "' ist doppelt vergeben");
+                }
+            }
             validateField(fields.get(i), i, errors);
         }
 

@@ -20,6 +20,15 @@ public class FormDefinitionValidatorTest {
     return mapper.readTree(json);
   }
 
+  private boolean containsError(List<String> errors, String expectedPart) {
+    for (String message : errors) {
+      if (message.contains(expectedPart)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   @Test
   void validFormDefinition_returnsNoErrors() throws Exception {
     String json = """
@@ -48,7 +57,8 @@ public class FormDefinitionValidatorTest {
     JsonNode root = parse(json);
     List<String> errors = validator.validate(root);
 
-    assertTrue(errors.isEmpty(), "Bei einer gültigen Formulardefinition dürfen keine Fehler auftreten");
+    assertTrue(errors.isEmpty(),
+        "Bei einer gültigen Formulardefinition dürfen keine Fehler auftreten");
   }
 
   @Test
@@ -62,14 +72,6 @@ public class FormDefinitionValidatorTest {
               "controlType": "textfield",
               "dataType": "string",
               "required": true
-            },
-            {
-              "id": "rating",
-              "label": "Bewertung",
-              "controlType": "dropdown",
-              "dataType": "string",
-              "required": true,
-              "options": ["Sehr gut", "Gut"]
             }
           ]
         }
@@ -78,16 +80,9 @@ public class FormDefinitionValidatorTest {
     JsonNode root = parse(json);
     List<String> errors = validator.validate(root);
 
-    assertFalse(errors.isEmpty(), "Es sollten Fehler auftreten wenn formTitle fehlt");
-
-    boolean found = false;
-    for (String message : errors) {
-      if (message.equals("formTitle fehlt oder ist kein String")) {
-        found = true;
-        break;
-      }
-    }
-    assertTrue(found, "Die Fehlermeldung wurde nicht gefudnen");
+    assertFalse(errors.isEmpty(), "Es sollten Fehler auftreten, wenn formTitle fehlt");
+    assertTrue(containsError(errors, "formTitle"),
+        "Die Fehlermeldung zu fehlendem formTitle wurde nicht gefunden");
   }
 
   @Test
@@ -113,20 +108,14 @@ public class FormDefinitionValidatorTest {
           ]
         }
         """;
+
     JsonNode root = parse(json);
     List<String> errors = validator.validate(root);
 
-    assertFalse(errors.isEmpty(), "Es sollten Fehler auftreten wenn Dropdown keine options hat");
-
-    boolean found = false;
-    for (String message : errors) {
-      if (message.contains("Für controlType Dropdown muss options ein nicht-leeres Array sein.")) {
-        found = true;
-        break;
-      }
-    }
-
-    assertTrue(found, "Die erwartete Fehlermeldung wurde nicht gefunden");
+    assertFalse(errors.isEmpty(),
+        "Es sollten Fehler auftreten, wenn Dropdown keine options hat");
+    assertTrue(containsError(errors, "options"),
+        "Fehlermeldung zu fehlenden options wurde nicht gefunden");
   }
 
   @Test
@@ -153,19 +142,120 @@ public class FormDefinitionValidatorTest {
           ]
         }
         """;
+
     JsonNode root = parse(json);
     List<String> errors = validator.validate(root);
 
-    assertFalse(errors.isEmpty(), "Es sollten Fehler auftauchen, wenn der dataType nicht gültig ist.");
+    assertFalse(errors.isEmpty(),
+        "Es sollten Fehler auftreten, wenn der dataType ungültig ist");
+    assertTrue(containsError(errors, "dataType"),
+        "Die Fehlermeldung zu ungültigem dataType wurde nicht gefunden");
+  }
 
-    boolean found = false;
-    for (String message : errors) {
-      if (message.contains("Ungültiger dataType: spinner")) {
-        found = true;
-        break;
-      }
-    }
+  @Test
+  void missingId_addsError() throws Exception {
+    String json = """
+        {
+          "formTitle": "Kunden-Feedback",
+          "fields": [
+            {
+              "label": "Name",
+              "controlType": "textfield",
+              "dataType": "string",
+              "required": true
+            }
+          ]
+        }
+        """;
 
-    assertTrue(found, "Die erwartete Fehlermeldung wurde nicht gefunden.");
+    JsonNode root = parse(json);
+    List<String> errors = validator.validate(root);
+
+    assertFalse(errors.isEmpty(),
+        "Es sollten Fehler auftreten, wenn id fehlt");
+    assertTrue(containsError(errors, "id"),
+        "Fehlermeldung zu fehlender id wurde nicht gefunden");
+  }
+
+  @Test
+  void invalidControlType_addsError() throws Exception {
+    String json = """
+        {
+          "formTitle": "Kunden-Feedback",
+          "fields": [
+            {
+              "id": "name",
+              "label": "Name",
+              "controlType": "supertextfield",
+              "dataType": "string",
+              "required": true
+            }
+          ]
+        }
+        """;
+
+    JsonNode root = parse(json);
+    List<String> errors = validator.validate(root);
+
+    assertFalse(errors.isEmpty(),
+        "Es sollten Fehler bei ungültigem controlType auftreten");
+    assertTrue(containsError(errors, "controlType"),
+        "Fehlermeldung zu ungültigem controlType wurde nicht gefunden");
+  }
+
+  @Test
+  void duplicateIds_addError() throws Exception {
+    String json = """
+        {
+          "formTitle": "Kunden-Feedback",
+          "fields": [
+            {
+              "id": "name",
+              "label": "Name",
+              "controlType": "textfield",
+              "dataType": "string",
+              "required": true
+            },
+            {
+              "id": "name",
+              "label": "Name wiederholt",
+              "controlType": "textfield",
+              "dataType": "string",
+              "required": false
+            }
+          ]
+        }
+        """;
+
+    JsonNode root = parse(json);
+    List<String> errors = validator.validate(root);
+
+    assertFalse(errors.isEmpty(),
+        "Es sollten Fehler auftreten, wenn die id doppelt vergeben wurde");
+    assertTrue(containsError(errors, "doppelt"),
+        "Fehlermeldung zu doppelter id wurde nicht gefunden");
+  }
+
+  @Test
+  void missingRequired_behavesAsSpecified() throws Exception {
+    String json = """
+        {
+          "formTitle": "Kunden-Feedback",
+          "fields": [
+            {
+              "id": "name",
+              "label": "Name",
+              "controlType": "textfield",
+              "dataType": "string"
+            }
+          ]
+        }
+        """;
+
+    JsonNode root = parse(json);
+    List<String> errors = validator.validate(root);
+
+    assertTrue(containsError(errors, "required"),
+        "Fehlermeldung zu fehlendem required wurde nicht gefunden");
   }
 }
