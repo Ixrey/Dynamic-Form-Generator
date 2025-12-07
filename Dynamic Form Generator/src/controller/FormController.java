@@ -87,9 +87,17 @@ public class FormController {
 
         Map<String, Object> values = guiBuilder.getCurrentValues();
 
+        guiBuilder.clearValidationMarks();
+
         Map<String, String> errors = inputValidator.validate(currentFormDefinition, values);
+
         if (!errors.isEmpty()) {
-            highlightFieldErrors(currentFormDefinition, values);
+            for (Map.Entry<String, String> entry : errors.entrySet()) {
+                String fieldId = entry.getKey();
+                String errorMessage = entry.getValue();
+                guiBuilder.markFieldInvalid(fieldId, errorMessage);
+            }
+
             mainWindow.showValidationErrors(errors.values());
             return;
         }
