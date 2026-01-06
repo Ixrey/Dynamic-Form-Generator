@@ -92,8 +92,8 @@
             ]
         },
         {
-            "id": "customConfig",
-            "label": "Individuelle Konfiguration erforderlich?",
+            "id": "testDeviceRequired",
+            "label": "Testgerät vorab erforderlich?",
             "controlType": "checkbox",
             "dataType": "boolean",
             "required": false

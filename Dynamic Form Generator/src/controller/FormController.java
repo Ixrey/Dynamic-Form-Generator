@@ -2,9 +2,6 @@ package controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +15,6 @@ import gui.MainWindow;
 import io.JsonReader;
 import io.JsonWriter;
 import model.FormDefinition;
-import model.FormField;
 import model.FormResult;
 import validation.FormDefinitionValidator;
 import validation.FormInputValidator;
@@ -120,23 +116,11 @@ public class FormController {
         try {
             jsonWriter.writeFormResult(result, file);
             mainWindow.showInfoMessage("Formular erfolgreich gespeichert!");
+            JPanel newPanel = guiBuilder.buildFormPanel(currentFormDefinition);
+            mainWindow.showFormPanel(newPanel);
         } catch (IOException e) {
             mainWindow.showErrorMessage("Das Formular konnte nicht gespeichert werden.");
             e.printStackTrace();
-        }
-    }
-
-    private void highlightFieldErrors(FormDefinition currentFormDefinition2, Map<String, Object> values) {
-        guiBuilder.clearValidationMarks();
-        for (FormField field : currentFormDefinition.getFields()) {
-            if (field.isRequired()) {
-                Object value = values.get(field.getLabel());
-                boolean empty = (value == null) || value.toString().trim().isEmpty();
-
-                if (empty) {
-                    guiBuilder.markFieldInvalid(field.getId(), "Pflichtfeld darf nicht leer sein");
-                }
-            }
         }
     }
 
