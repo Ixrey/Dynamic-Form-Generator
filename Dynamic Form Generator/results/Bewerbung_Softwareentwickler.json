@@ -1,0 +1,15 @@
+{
+    "formTitle": "Bewerbung",
+    "submittedAt": "2025-12-08T08:23:31.866480400",
+    "formDefinitionPath": "C:\\Users\\Tobi Stocker\\Desktop\\Schule\\Fachquali\\Dynamic-Form-Generator\\Dynamic Form Generator\\forms\\Bewerbung.json",
+    "values": {
+        "Vollständiger Name": "Tobias Stocker",
+        "E-Mail": "tobias.stocker@abc.de",
+        "Telefonnummer": "0171 123456789",
+        "Bewerbung für Position": "Softwareentwickler",
+        "Umzugsbereitschaft": true,
+        "Berufserfahrung (Jahre)": 1,
+        "Bevorzugter Starttermin": 1766876400000,
+        "Motivationsschreiben": "Ich möchte unbedingt diesen Job. Wirklich!"
+    }
+}

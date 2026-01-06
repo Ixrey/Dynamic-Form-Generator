@@ -242,7 +242,6 @@ public class FormGuiBuilder {
         JComponent component = componentsById.get(fieldId);
 
         if (component != null) {
-            System.out.println("WARN: Kein Component für fieldId=" + fieldId);
             component.setBorder(new LineBorder(Color.RED, 1));
             component.setToolTipText(errorMessage);
         }
